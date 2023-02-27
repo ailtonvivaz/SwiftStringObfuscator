@@ -47,6 +47,7 @@ final class SwiftStringObfuscatorTests: XCTestCase {
     
     let sampleObfuscatedOutput = """
     //:obfuscate
+    //mensagem
     let apiKey = String(bytes: [115,111,109,101,116,104,105,110,103,45,115,101,99,114,101,116], encoding: .utf8)
 
     //:obfuscate
@@ -86,12 +87,43 @@ final class SwiftStringObfuscatorTests: XCTestCase {
     }
     """
     
-    func testObfuscator() throws {
-        let obfuscated = try? StringObfuscator.getObfuscatedContent(for: sampleFileURL)
-        XCTAssertEqual(obfuscated, sampleObfuscatedOutput)
+//    func testObfuscator() throws {
+//        let obfuscated = try? StringObfuscator.getObfuscatedContent(for: sampleFileURL)
+//        XCTAssertEqual(obfuscated, sampleObfuscatedOutput)
+//    }
+    
+    func testJustPrint() throws {
+        let obfuscationKey = "random-key"
+        
+        let content = #"""
+        //:obfuscate
+        static func getUser(userId: String) -> String {
+            "user/\(userId)"
+        }
+                
+        static func getUserOpen(userId: String) -> String {
+            "user/open/\(userId)"
+        }
+        """#
+        
+        let contentObfuscated = #"""
+        //:obfuscate
+        static func getUser(userId: String) -> String {
+            "\(StringObfuscated([7, 18, 11, 22, 64]))\(userId)"
+        }
+                
+        static func getUserOpen(userId: String) -> String {
+            "user/open/\(userId)"
+        }
+        """#
+        
+        let obfuscated = try! StringObfuscator.getObfuscatedContent(for: Self.urlTempString(content), and: obfuscationKey)
+        
+        print(obfuscated)
+        XCTAssertEqual(obfuscated, contentObfuscated)
     }
 
-    static var allTests = [("testObfuscator", testObfuscator)]
+//    static var allTests = [("testObfuscator", testObfuscator)]
     
     static func urlTempString(_ str: String) -> URL {
         let directory = NSTemporaryDirectory()

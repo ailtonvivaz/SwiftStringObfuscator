@@ -12,6 +12,9 @@ import SwiftStringObfuscatorCore
 struct SwiftStringObfuscator: ParsableCommand {
     static let configuration = CommandConfiguration(
         abstract: "A Swift command-line tool to convert string api-keys to byte arrays.")
+    
+    @Option(name: .shortAndLong, help: "Key to obfuscate")
+    var key: String
 
     @Option(name: .shortAndLong, help: "Source file name.")
     var sourceFile: String
@@ -22,7 +25,7 @@ struct SwiftStringObfuscator: ParsableCommand {
     mutating func run() throws {
         let inUrl = URL(fileURLWithPath: sourceFile)
         let outUrl = URL(fileURLWithPath: targetFile)
-        try! StringObfuscator.obfuscateContent(sourceFile: inUrl, targetFile: outUrl)
+        try! StringObfuscator.obfuscateContent(sourceFile: inUrl, targetFile: outUrl, key: key)
     }
 }
 
